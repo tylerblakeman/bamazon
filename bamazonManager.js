@@ -22,24 +22,31 @@ function initial() {
         res.forEach(element => {
             allItems.push(element.item_id);
         });
-        //calling the initial question
-        questions()
     })
+    inquirer
+    .prompt ([
+        {
+            type: "checkbox",
+            name: "initialChoice",
+            message: "Welcome to Bamazon Management dashboard, what would you like to do today?",
+            choices: ""
+        }
+    ])
 };
 
 //asking the user what item they would like to purchase
-function questions() {
+function inventoryUpdate() {
     inquirer
     .prompt([
         {
         type: "input",
-        name: "purchase",
-        message: "Please enter the item ID for the item you would like to purchase?"
+        name: "inventoryUpdate",
+        message: "Please enter the item ID for the item you would like to update?"
         }
     ])
     .then(function(user){
         //calling the inventory check function
-        productCheck(user.purchase)
+        productCheck(user.inventoryUpdate)
     })
 }
 
@@ -51,7 +58,7 @@ function productCheck(x){
                 console.log(`this is the item you have selected`)
                 console.table(available)
                 //calling secondary line of questioning
-                purchaseQuantity()
+                updateQuantity()
             });
         } else {
         console.error(`Item ID ${x} does not exist, please try another item`)
@@ -59,26 +66,26 @@ function productCheck(x){
         }
 };
 
-//asking the user the quantity they would like to purchase
-function purchaseQuantity(){
+//asking the user the quantity they would like add to the current inventory
+function updateQuantity(){
     inquirer
     .prompt ([
         {
             type: "number",
-            name: "purchaseQuantity",
+            name: "updateeQuantity",
             message: `You have selected item ID: ${available.item_id}. How many would you like to purchase?`
         }
     ])
     .then(function(user){
         //asking the customer the amount that they would like to order of the specific item.
-        console.log(`You have selected to purchase ${user.purchaseQuantity} of ${available.item_id}`)
-        if (user.purchaseQuantity > available.stock_quantity) {
-            console.log(`There are only ${available.stock_quantity} available of that item. Please choose again`)
+        console.log(`You have selected to purchase ${user.updateQuantity} of ${available.item_id}`)
+        if (user.purchaseQuantity <= 0) {
+            console.log(`You have chosen to add less than 0, please add 1 or more items to the inventory.`)
             purchaseQuantity();
         }
         else {
             //updating quantity to new quantity based on the customer's order
-            connection.query(`UPDATE products SET stock_quantity ="${available.stock_quantity - user.purchaseQuantity}" where item_id="${available.item_id}"`, function (err, res) {
+            connection.query(`UPDATE products SET stock_quantity ="${user.updateQuantity}" where item_id="${available.item_id}"`, function (err, res) {
                 if (err) throw (err);
                 else {
                     console.log('Your order was succesful!')
@@ -89,3 +96,4 @@ function purchaseQuantity(){
         }
     })
 }
+*

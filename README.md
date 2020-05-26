@@ -5,6 +5,7 @@ Bamazon is a node command line application that allows a user to select an item 
 ## Table of Contents
 
 [**Installation**](#installation)
+
 [**Execution**](#execution)
 
 [**Node Modules**](#Node-Modules)
